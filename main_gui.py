@@ -115,7 +115,6 @@ class Ui_vote_app(object):
         font = QtGui.QFont()
         font.setPointSize(11)
         self.radio_jane.setFont(font)
-        self.radio_jane.setChecked(False)
         self.radio_jane.setObjectName("radio_jane")
         self.label_title2 = QtWidgets.QLabel(parent=self.page_2)
         self.label_title2.setGeometry(QtCore.QRect(-10, 0, 521, 61))

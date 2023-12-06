@@ -12,7 +12,8 @@ def is_valid_email(email):
 
 def is_valid_phone(phone):
     pattern = r'^\d{10}$'
-    return re.match(pattern, phone) is not None
+    pattern2 = r'^\d{3}-\d{3}-\d{4}$'
+    return re.match(pattern, phone) is not None or re.match(pattern2, phone)
 
 
 def email_exists(email):
@@ -29,8 +30,6 @@ def email_exists(email):
 
 class Logic(QMainWindow, Ui_vote_app):
     def __init__(self):
-        self.radio_john = False
-        self.radio_jane = False
         super().__init__()
         self.main_ui = Ui_vote_app()
         self.main_ui.setupUi(self)
@@ -43,6 +42,7 @@ class Logic(QMainWindow, Ui_vote_app):
         self.main_ui.exit_button.clicked.connect(self.close)
         self.main_ui.reset_button.clicked.connect(self.clear_input)
         self.main_ui.vote_button.clicked.connect(self.import_to_csv)
+
 
     def next_screen(self):
         input_text1 = self.main_ui.name_text_box.text().strip()
@@ -88,8 +88,8 @@ class Logic(QMainWindow, Ui_vote_app):
         row_one = ['Name', 'Email', 'Phone', 'Choice']
         name_input, email_input, phone_input = self.next_screen()
         try:
-            if not self.radio_jane or not self.radio_john:
-                choice = 'Jane' if not self.radio_jane else 'John'
+            if not self.main_ui.radio_jane.isChecked() or not self.main_ui.radio_john.isChecked():
+                choice = 'Jane' if self.main_ui.radio_jane.isChecked() else 'John'
                 info_list = [name_input, email_input, phone_input, choice]
 
                 if email_exists(email_input):
@@ -105,13 +105,13 @@ class Logic(QMainWindow, Ui_vote_app):
                     QtWidgets.QMessageBox.information(
                         None,
                         "Thank you!",
-                        f"Thank you {name_input} for voting!"
+                        f"Thank you {name_input} for voting for {choice}!"
                     )
                     self.close()
             else:
                 raise ValueError('Please select a candidate.')
 
-        except Exception as e:
+        except ValueError as e:
             QtWidgets.QMessageBox.warning(
                 None,
                 "Warning!",
