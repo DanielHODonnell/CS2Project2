@@ -79,10 +79,10 @@ class Logic(QMainWindow, Ui_vote_app):
                 if any(char.isdigit() for char in name):
                     raise ValueError('Name should not contain numbers.')
 
-                if not is_valid_email(email):
+                if not self.is_valid_email(email):
                     raise ValueError('Invalid email format.')
 
-                if not is_valid_phone(phone):
+                if not self.is_valid_phone(phone):
                     raise ValueError('Invalid phone number format.')
 
                 next_ui = lambda: self.main_ui.stackedWidget.setCurrentWidget(self.main_ui.page_2)
@@ -117,7 +117,7 @@ class Logic(QMainWindow, Ui_vote_app):
                 choice = 'Jane' if self.main_ui.radio_jane.isChecked() else 'John'
                 info_list = [name_input, email_input, phone_input, choice]
 
-                if email_exists(email_input):
+                if self.email_exists(email_input):
                     raise ValueError('You have already voted.')
 
                 with open('voting_results.csv', 'a', newline='') as csvfile:
