@@ -5,44 +5,6 @@ import os
 import csv
 
 
-def is_valid_email(email: str) -> bool:
-    """
-    Checks if the given email address is valid.
-    :param email: The email address to validate.
-    :return: True if the email is valid, False if not.
-    """
-    pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
-    return re.match(pattern, email) is not None
-
-
-def is_valid_phone(phone: str) -> bool:
-    """
-    Checks if the given phone number is valid.
-    :param phone: The phone number to validate.
-    :return: True if the phone number is valid, False if not.
-    """
-    pattern = r'^\d{10}$'
-    pattern2 = r'^\d{3}-\d{3}-\d{4}$'
-    return re.match(pattern, phone) is not None or re.match(pattern2, phone)
-
-
-def email_exists(email: str) -> bool:
-    """
-    Checks if the given email already exists in the CSV file.
-    :param email: The email address to check.
-    :return: True if the email exists, False if not.
-    """
-    if not os.path.exists('voting_results.csv'):
-        return False
-
-    with open('voting_results.csv', 'r+', newline='') as csvfile:
-        reader = csv.reader(csvfile)
-        for row in reader:
-            if email == row[1]:
-                return True
-    return False
-
-
 class Logic(QMainWindow, Ui_vote_app):
     """
     This is the main logic class for the voting application.
@@ -63,6 +25,41 @@ class Logic(QMainWindow, Ui_vote_app):
         self.main_ui.exit_button.clicked.connect(self.close)
         self.main_ui.reset_button.clicked.connect(self.clear_input)
         self.main_ui.vote_button.clicked.connect(self.import_to_csv)
+
+    def is_valid_email(self, email: str) -> bool:
+        """
+        Checks if the given email address is valid.
+        :param email: The email address to validate.
+        :return: True if the email is valid, False if not.
+        """
+        pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+        return re.match(pattern, email) is not None
+
+    def is_valid_phone(self, phone: str) -> bool:
+        """
+        Checks if the given phone number is valid.
+        :param phone: The phone number to validate.
+        :return: True if the phone number is valid, False if not.
+        """
+        pattern = r'^\d{10}$'
+        pattern2 = r'^\d{3}-\d{3}-\d{4}$'
+        return re.match(pattern, phone) is not None or re.match(pattern2, phone)
+
+    def email_exists(self, email: str) -> bool:
+        """
+        Checks if the given email already exists in the CSV file.
+        :param email: The email address to check.
+        :return: True if the email exists, False if not.
+        """
+        if not os.path.exists('voting_results.csv'):
+            return False
+
+        with open('voting_results.csv', 'r+', newline='') as csvfile:
+            reader = csv.reader(csvfile)
+            for row in reader:
+                if email == row[1]:
+                    return True
+        return False
 
     def next_screen(self):
         """
