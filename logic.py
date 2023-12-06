@@ -1,11 +1,14 @@
 from PyQt6.QtWidgets import *
 from main_gui import *
 import re
+import os
 import csv
 
 
 class Logic(QMainWindow, Ui_vote_app):
     def __init__(self):
+        self.radio_john = False
+        self.radio_jane = False
         super().__init__()
         self.main_ui = Ui_vote_app()
         self.main_ui.setupUi(self)
@@ -17,6 +20,7 @@ class Logic(QMainWindow, Ui_vote_app):
 
         self.main_ui.exit_button.clicked.connect(self.close)
         self.main_ui.reset_button.clicked.connect(self.clear_input)
+        self.main_ui.vote_button.clicked.connect(self.import_to_csv)
 
     def is_valid_email(self, email):
         pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
@@ -25,6 +29,17 @@ class Logic(QMainWindow, Ui_vote_app):
     def is_valid_phone(self, phone):
         pattern = r'^\d{10}$'
         return re.match(pattern, phone) is not None
+
+    def email_exists(self, email):
+        if not os.path.exists('voting_results.csv'):
+            return False
+
+        with open('voting_results.csv', 'r+', newline='') as csvfile:
+            reader = csv.reader(csvfile)
+            for row in reader:
+                if email == row[1]:
+                    return True
+        return False
 
     def next_screen(self):
         input_text1 = self.main_ui.name_text_box.text().strip()
@@ -52,7 +67,7 @@ class Logic(QMainWindow, Ui_vote_app):
             except ValueError as e:
                 QtWidgets.QMessageBox.warning(
                     None,
-                    'Warning',
+                    'Warning!',
                     str(e)
                 )
                 return
@@ -60,10 +75,48 @@ class Logic(QMainWindow, Ui_vote_app):
             if not input_text1 or not input_text2 or not input_text3:
                 QtWidgets.QMessageBox.warning(
                     None,
-                    "Warning",
+                    "Warning!",
                     "Please enter in your information"
                 )
                 return
+        return input_text1, input_text2, input_text3
+
+    def import_to_csv(self):
+        row_one = ['Name', 'Email', 'Phone', 'Choice']
+        name_input, email_input, phone_input = self.next_screen()
+        try:
+            if not self.radio_jane or not self.radio_john:
+                choice = 'Jane' if not self.radio_jane else 'John'
+                info_list = [name_input, email_input, phone_input, choice]
+
+                if self.email_exists(email_input):
+                    raise ValueError('You have already voted.')
+
+                with open('voting_results.csv', 'a', newline='') as csvfile:
+                    content = csv.writer(csvfile)
+                    if csvfile.tell() == 0:
+                        content.writerow(row_one)
+
+                    content.writerow(info_list)
+
+                    QtWidgets.QMessageBox.information(
+                        None,
+                        "Thank you!",
+                        f"Thank you {name_input} for voting!"
+                    )
+                    self.close()
+            else:
+                raise ValueError('Please select a candidate.')
+
+        except Exception as e:
+            QtWidgets.QMessageBox.warning(
+                None,
+                "Warning!",
+                str(e)
+            )
+            return
+
+        print(f'done')
 
     def clear_input(self):
         self.main_ui.name_text_box.clear()

@@ -115,6 +115,7 @@ class Ui_vote_app(object):
         font = QtGui.QFont()
         font.setPointSize(11)
         self.radio_jane.setFont(font)
+        self.radio_jane.setChecked(False)
         self.radio_jane.setObjectName("radio_jane")
         self.label_title2 = QtWidgets.QLabel(parent=self.page_2)
         self.label_title2.setGeometry(QtCore.QRect(-10, 0, 521, 61))
@@ -172,7 +173,7 @@ class Ui_vote_app(object):
         self.radio_jane.setText(_translate("vote_app", "Jane"))
         self.label_title2.setText(_translate("vote_app", "Who will you vote for?"))
         self.vote_button.setText(_translate("vote_app", "VOTE"))
-        self.label_info2.setText(_translate("vote_app", "Welcome {name} please select a candidate!"))
+        self.label_info2.setText(_translate("vote_app", "Welcome! Please select a candidate!"))
         self.radio_john.setText(_translate("vote_app", "John"))
 
 
