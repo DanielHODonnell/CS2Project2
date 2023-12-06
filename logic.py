@@ -5,18 +5,33 @@ import os
 import csv
 
 
-def is_valid_email(email):
+def is_valid_email(email: str) -> bool:
+    """
+    Checks if the given email address is valid.
+    :param email: The email address to validate.
+    :return: True if the email is valid, False if not.
+    """
     pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
     return re.match(pattern, email) is not None
 
 
-def is_valid_phone(phone):
+def is_valid_phone(phone: str) -> bool:
+    """
+    Checks if the given phone number is valid.
+    :param phone: The phone number to validate.
+    :return: True if the phone number is valid, False if not.
+    """
     pattern = r'^\d{10}$'
     pattern2 = r'^\d{3}-\d{3}-\d{4}$'
     return re.match(pattern, phone) is not None or re.match(pattern2, phone)
 
 
-def email_exists(email):
+def email_exists(email: str) -> bool:
+    """
+    Checks if the given email already exists in the CSV file.
+    :param email: The email address to check.
+    :return: True if the email exists, False if not.
+    """
     if not os.path.exists('voting_results.csv'):
         return False
 
@@ -29,7 +44,13 @@ def email_exists(email):
 
 
 class Logic(QMainWindow, Ui_vote_app):
+    """
+    This is the main logic class for the voting application.
+    """
     def __init__(self):
+        """
+        Initializes the Logic class.
+        """
         super().__init__()
         self.main_ui = Ui_vote_app()
         self.main_ui.setupUi(self)
@@ -43,8 +64,11 @@ class Logic(QMainWindow, Ui_vote_app):
         self.main_ui.reset_button.clicked.connect(self.clear_input)
         self.main_ui.vote_button.clicked.connect(self.import_to_csv)
 
-
     def next_screen(self):
+        """
+        Processes user information and changes screens.
+        :return: None and a tuple containing user's name, email, and phone number.
+        """
         input_text1 = self.main_ui.name_text_box.text().strip()
         input_text2 = self.main_ui.email_text_box.text().strip()
         input_text3 = self.main_ui.phone_text_box.text().strip()
@@ -84,7 +108,11 @@ class Logic(QMainWindow, Ui_vote_app):
                 return
         return input_text1, input_text2, input_text3
 
-    def import_to_csv(self):
+    def import_to_csv(self) -> None:
+        """
+        Takes the user's info plus their candidate choice and stores it in a CSV file.
+        :return: None
+        """
         row_one = ['Name', 'Email', 'Phone', 'Choice']
         name_input, email_input, phone_input = self.next_screen()
         try:
@@ -121,7 +149,11 @@ class Logic(QMainWindow, Ui_vote_app):
 
         print(f'done')
 
-    def clear_input(self):
+    def clear_input(self) -> None:
+        """
+        Clears all text boxes in application.
+        :return: None
+        """
         self.main_ui.name_text_box.clear()
         self.main_ui.email_text_box.clear()
         self.main_ui.phone_text_box.clear()
